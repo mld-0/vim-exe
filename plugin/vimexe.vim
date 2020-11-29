@@ -80,10 +80,6 @@ function! g:VimExe(...)
 	echo "========================================"
 	echo ""
 
-	if (func_printdebug == 1)
-		echo printf("runcmd=(%s)\n", runcmd)
-	endif
-
 	" (2019-11-24)-(1927-01) Prompt the user for input, to prevent the output window being closed pre-maturely.
 	call inputsave()
 	let value = input("Press Enter to Continue.")
