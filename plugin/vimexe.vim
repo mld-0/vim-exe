@@ -15,7 +15,8 @@ let g:VimExe_command_str_prefix = ":w !"
 "	TODO: 2020-11-29T11:54:03AEDT standard(ised) declaration of filetypes and runpaths -> (instead of if-else, list which can be itterated over)
 
 let g:VimExe_ft_python = "python"
-let g:VimExe_runpath_python = g:VimExe_command_str_prefix . "$HOME/.pyenv/shims/python3"
+"let g:VimExe_runpath_python = g:VimExe_command_str_prefix . "$HOME/.pyenv/shims/python3"
+let g:VimExe_runpath_python = g:VimExe_command_str_prefix . "/usr/local/bin/python3"
 
 let g:VimExe_ft_bash = "sh"
 let g:VimExe_runpath_shell = g:VimExe_command_str_prefix . "/bin/bash"
@@ -23,8 +24,21 @@ let g:VimExe_runpath_shell = g:VimExe_command_str_prefix . "/bin/bash"
 let g:VimExe_ft_vimscript = "vim"
 let g:VimExe_runpath_vimscript = ':source %'
 
-let g:VimExe_ft_zsh_run = [ "zsh", g:VimExe_command_str_prefix . "/bin/zsh" ]
-let g:VimExe_ft_perl_run = [ "perl", g:VimExe_command_str_prefix . "/usr/bin/perl" ]
+"let g:VimExe_ft_zsh_run = [ "zsh", g:VimExe_command_str_prefix . "/usr/local/bin/zsh" ]
+let g:VimExe_ft_zsh_run = [ "zsh", g:VimExe_command_str_prefix . $bin_zsh ]
+"let g:VimExe_ft_perl_run = [ "perl", g:VimExe_command_str_prefix . "/usr/local/bin/perl" ]
+let g:VimExe_ft_perl_run = [ "perl", g:VimExe_command_str_prefix . $bin_perl ]
+
+"	TODO: 2021-05-18T20:04:00AEST This is f------ fugly as f--- -> clean approach (with filetypes, run commands read from config file?)
+
+"	TODO: 2021-05-18T18:36:44AEST running a single C source (which is not actually *implemented* here) (And is sort of pointless in anycase - beyond the 'interactive' example?)
+"	2021-05-18T20:02:43AEST Save source to temp file, compile and run that?
+
+let g:VimExe_ft_c = "c"
+let g:VimExe_ft_cpp = "cpp"
+
+"let g:VimExe_runpath_gcc = "gcc"
+
 
 function! g:VimExe(...)
 "	{{{
@@ -47,6 +61,32 @@ function! g:VimExe(...)
 	elseif (current_filetype == g:VimExe_ft_bash)
 		let runcmd = g:VimExe_runpath_shell
 		let found_filetype_flag = 1
+	elseif (current_filetype == g:VimExe_ft_c)
+		"let runcmd = g:VimExe_runpath_gcc 
+		"echoerr func_name . ": Ongoing implemention of Exe for C source"
+
+		"	TODO: 2021-05-19T19:53:34AEST Save file, so that current buffer is what is built
+		"let runcmd = ":w<CR>"
+		"execute runcmd
+
+		let runcmd = 'gcc ' . expand('%:t') . ' -o a.vim.out; ./a.vim.out' 
+		let result = system(runcmd)
+		echo "runcmd=(" . runcmd . ")"
+		echo "========================================"
+		echo result
+		echo "========================================"
+		return
+
+	elseif (current_filetype == g:VimExe_ft_cpp)
+
+		let runcmd = 'g++ -std=c++17 ' . expand('%:t') . ' -o a.vim.out; ./a.vim.out' 
+		let result = system(runcmd)
+		echo "runcmd=(" . runcmd . ")"
+		echo "========================================"
+		echo result
+		echo "========================================"
+		return
+
 	elseif (current_filetype == g:VimExe_ft_perl_run[0])
 		let runcmd = g:VimExe_ft_perl_run[1]
 		let found_filetype_flag = 1
