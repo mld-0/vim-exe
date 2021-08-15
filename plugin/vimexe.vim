@@ -28,7 +28,7 @@ let g:VimExe_ft_zsh_run = [ "zsh", g:VimExe_command_str_prefix . $bin_zsh ]
 "let g:VimExe_ft_perl_run = [ "perl", g:VimExe_command_str_prefix . "/usr/local/bin/perl" ]
 let g:VimExe_ft_perl_run = [ "perl", g:VimExe_command_str_prefix . $bin_perl ]
 
-"	TODO: 2021-05-18T20:04:00AEST This is f------ fugly as f--- -> clean approach (with filetypes, run commands read from config file?)
+"	TODO: 2021-05-18T20:04:00AEST This is f------ fugly as f--- -> clean approach (with filetypes, run commands, read from config file?)
 
 "	TODO: 2021-05-18T18:36:44AEST running a single C source (which is not actually *implemented* here) (And is sort of pointless in anycase - beyond the 'interactive' example?)
 "	2021-05-18T20:02:43AEST Save source to temp file, compile and run that?
