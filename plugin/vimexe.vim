@@ -4,6 +4,8 @@
 "	}}}1
 "	{{{2
 
+let g:VimExe_version = "0.1"
+
 let g:VimExe_loaded = 1
 
 let g:VimExe_outputToClipboard_default = 0
@@ -15,7 +17,8 @@ let g:VimExe_command_str_prefix = ":w !"
 
 let g:VimExe_ft_python = "python"
 "let g:VimExe_runpath_python = g:VimExe_command_str_prefix . "$HOME/.pyenv/shims/python3"
-let g:VimExe_runpath_python = g:VimExe_command_str_prefix . "/usr/local/bin/python3"
+"let g:VimExe_runpath_python = g:VimExe_command_str_prefix . "/usr/local/bin/python3"
+let g:VimExe_runpath_python = g:VimExe_command_str_prefix . "python3"
 
 let g:VimExe_ft_bash = "sh"
 let g:VimExe_runpath_shell = g:VimExe_command_str_prefix . "/bin/bash"
@@ -24,9 +27,11 @@ let g:VimExe_ft_vimscript = "vim"
 let g:VimExe_runpath_vimscript = ':source %'
 
 "let g:VimExe_ft_zsh_run = [ "zsh", g:VimExe_command_str_prefix . "/usr/local/bin/zsh" ]
-let g:VimExe_ft_zsh_run = [ "zsh", g:VimExe_command_str_prefix . $bin_zsh ]
+"let g:VimExe_ft_zsh_run = [ "zsh", g:VimExe_command_str_prefix . $bin_zsh ]
+let g:VimExe_ft_zsh_run = [ "zsh", g:VimExe_command_str_prefix . 'zsh' ]
 "let g:VimExe_ft_perl_run = [ "perl", g:VimExe_command_str_prefix . "/usr/local/bin/perl" ]
-let g:VimExe_ft_perl_run = [ "perl", g:VimExe_command_str_prefix . $bin_perl ]
+"let g:VimExe_ft_perl_run = [ "perl", g:VimExe_command_str_prefix . $bin_perl ]
+let g:VimExe_ft_perl_run = [ "perl", g:VimExe_command_str_prefix . 'perl' ]
 
 "	TODO: 2021-05-18T20:04:00AEST This is f------ fugly as f--- -> clean approach (with filetypes, run commands, read from config file?)
 
@@ -38,9 +43,9 @@ let g:VimExe_ft_cpp = "cpp"
 
 "let g:VimExe_runpath_gcc = "gcc"
 
+let g:VimExe_ft_rust = "rust"
 
 function! g:VimExe(...)
-"	{{{
 	"let func_name = g:VimExe_CallerFuncName()
 	let func_name = "VimExe"
 	let func_printdebug = 1
@@ -78,7 +83,7 @@ function! g:VimExe(...)
 
 	elseif (current_filetype == g:VimExe_ft_cpp)
 
-		let runcmd = 'g++ -std=c++17 ' . expand('%:t') . ' -o a.vim.out; ./a.vim.out' 
+		let runcmd = 'g++ -Wall -std=c++17 ' . expand('%:t') . ' -o a.vim.out; ./a.vim.out' 
 		let result = system(runcmd)
 		echo "runcmd=(" . runcmd . ")"
 		echo "========================================"
@@ -86,10 +91,23 @@ function! g:VimExe(...)
 		echo "========================================"
 		return
 
+	elseif (current_filetype == g:VimExe_ft_rust)
+
+		"	Ongoing: 2022-09-13T01:24:45AEST capture stderr from 'system()' call
+		let runcmd = 'cargo run'
+		let result = system(runcmd)
+		echo "========================================"
+		echo result
+		echo "========================================"
+		return
+
 	elseif (current_filetype == g:VimExe_ft_perl_run[0])
+
 		let runcmd = g:VimExe_ft_perl_run[1]
 		let found_filetype_flag = 1
+
 	elseif (current_filetype == g:VimExe_ft_vimscript)
+
 		"let runcmd = g:VimExe_runpath_vimscript
 		"let found_filetype_flag = 1
 		if (put_output_to_clipboard == 0)
@@ -98,13 +116,17 @@ function! g:VimExe(...)
 			execute g:VimExe_runpath_vimscript_clipboard
 		endif
 		"return
+
 	elseif (current_filetype == g:VimExe_ft_zsh_run[0])
+
 		let runcmd = g:VimExe_ft_zsh_run[1]
 		let found_filetype_flag = 1
+
 	else
 		let message_str = func_name . ": error, filetype not found"
 		echo message_str
 		return
+
 	endif
 
 	"	execute does not return anything. Therefore, to get output into the clipboard, we pipe output to pbcopy, then run pbpaste so said output gets printed to window
@@ -124,7 +146,6 @@ function! g:VimExe(...)
 	let value = input("Press Enter to Continue.")
 	call inputrestore()
 endfunction
-"	}}}
 
 command! Exe execute "call VimExe()"
 command! ExeClipboard execute "call VimExe(1)"
