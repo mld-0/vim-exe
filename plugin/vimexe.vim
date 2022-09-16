@@ -94,7 +94,7 @@ function! g:VimExe(...)
 	elseif (current_filetype == g:VimExe_ft_rust)
 
 		"	Ongoing: 2022-09-13T01:24:45AEST capture stderr from 'system()' call
-		let runcmd = 'cargo run'
+		let runcmd = 'cargo run -q'
 		let result = system(runcmd)
 		echo "========================================"
 		echo result
